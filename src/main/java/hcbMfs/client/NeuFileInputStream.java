@@ -42,7 +42,7 @@ public class NeuFileInputStream extends FSInputStream {
 
         // get message from kafka
         Pair<String, Integer> tp = getTopicPatition(pathInfo.name);
-        TopicPartition topicPartition = new TopicPartition(tp.getKey(),tp.getValue()%3);
+        TopicPartition topicPartition = new TopicPartition(tp.getKey(),tp.getValue() % MfsFileSystem.partNum);
         List topicPartitionList = new ArrayList<TopicPartition>();
         topicPartitionList.add(topicPartition);
         consumer.assign(topicPartitionList);

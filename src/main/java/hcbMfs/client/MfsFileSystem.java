@@ -33,6 +33,8 @@ public class MfsFileSystem extends org.apache.hadoop.fs.FileSystem {
 
     public static final Logger LOG = LoggerFactory.getLogger(MfsFileSystem.class);
 
+    public static int partNum ;
+
     private URI uri;
     
     private Path workingDirectory = new Path("/");
@@ -55,6 +57,11 @@ public class MfsFileSystem extends org.apache.hadoop.fs.FileSystem {
             BUFFERSIZE = PropertyUtils.getBufferSize();
         } else {
             BUFFERSIZE = Integer.parseInt(conf.get("bufferSize"));
+        }
+        if (conf.get("partNum") == null || conf.get("partNum") == "") {
+            partNum = PropertyUtils.getPartNum();
+        } else {
+            partNum = Integer.parseInt(conf.get("partNum"));
         }
         ZK_SERVERS = conf.get("zkServers");
         KAFKA_SERVERS = conf.get("kafkaServers");

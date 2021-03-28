@@ -43,6 +43,18 @@ public class PropertyUtils {
         return Integer.parseInt(myProp.getProperty("bufferSize"));
 
     }
+    public static int getPartNum() {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        InputStream inStream = cl.getResourceAsStream("hcbConfig.properties");
+        Properties myProp = new Properties();
+        try {
+            myProp.load(inStream);
+        } catch (IOException e) {
+            MfsFileSystem.LOG.error(e.toString());
+        }
+        return Integer.parseInt(myProp.getProperty("partNum"));
+
+    }
 
 
 }

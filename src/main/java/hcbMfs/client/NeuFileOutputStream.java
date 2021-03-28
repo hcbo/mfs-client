@@ -16,6 +16,7 @@ import java.util.concurrent.Future;
 public class NeuFileOutputStream extends OutputStream {
 
     private int BYTE_BUFFER_SIZE;
+    private int partNum;
     private byte[] byteBuffer;
     private int pointer;
 
@@ -29,6 +30,7 @@ public class NeuFileOutputStream extends OutputStream {
     public NeuFileOutputStream(CuratorFramework zkclient,String path,Producer<String, byte[]> produc) {
         // path:  /topic/partitionNo/fileName
         this.BYTE_BUFFER_SIZE = MfsFileSystem.BUFFERSIZE;
+        this.partNum = MfsFileSystem.partNum;
         byteBuffer = new byte[BYTE_BUFFER_SIZE];
         this.client = zkclient;
         pathInfo = new PathInfo();
@@ -49,7 +51,7 @@ public class NeuFileOutputStream extends OutputStream {
         // 写入kafka
         Pair<String, Integer> topicPartition = getTopicPatition(pathInfo.name);
         ProducerRecord record =
-                new ProducerRecord(topicPartition.getKey(), topicPartition.getValue()%3,
+                new ProducerRecord(topicPartition.getKey(), topicPartition.getValue()%partNum,
                         pathInfo.name, Arrays.copyOf(byteBuffer,pointer));
         Future<RecordMetadata> future = producer.send(record);
         // 下边这句代码必须有,会刷新缓存到主题.
